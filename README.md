@@ -1,11 +1,52 @@
 # Train Route Tracker
 
-Учёт маршрутов пассажирских поездов.
+Система учёта и визуализации маршрутов пассажирских поездов.
 
-## Этапы
-- Stage 1: In-memory storage, console UI
-- Stage 2: PostgreSQL via JDBC
-- Stage 3: Servlets on Tomcat, web UI with Leaflet map
+## Описание проекта
+Проект реализует трёхслойную архитектуру (UI -> Service -> Repository) для управления данными о железнодорожных маршрутах и их станциях.
 
-## Запуск (этап 1)
+## Технологии
+- **Java 17**
+- **Maven 3.9+**
+- **H2 Database** (JDBC)
+- **Lombok**
+
+## Схема базы данных (Stage 2)
+
+Проект использует реляционную базу данных H2. Схема состоит из двух связанных таблиц:
+
+### 1. Таблица `routes` (Маршруты)
+| Поле | Тип | Описание |
+| :--- | :--- | :--- |
+| `id` | BIGINT (PK) | Уникальный идентификатор (Auto Increment) |
+| `train_number` | VARCHAR(50) | Номер поезда (например, "062М") |
+| `name` | VARCHAR(255) | Название маршрута |
+
+### 2. Таблица `stations` (Станции)
+| Поле | Тип | Описание |
+| :--- | :--- | :--- |
+| `id` | BIGINT (PK) | Уникальный идентификатор (Auto Increment) |
+| `route_id` | BIGINT (FK) | Ссылка на маршрут (`ON DELETE CASCADE`) |
+| `name` | VARCHAR(255) | Название станции |
+| `arrival_time` | TIME | Время прибытия |
+| `departure_time` | TIME | Время отправления |
+| `order_index` | INT | Порядковый номер в пути |
+| `day_offset` | INT | Смещение дня пути (0 - старт, 1 - след. день) |
+| `type` | VARCHAR(20) | Тип (DEPARTURE, INTERMEDIATE, ARRIVAL) |
+| `latitude` | DOUBLE | Широта (для карты) |
+| `longitude` | DOUBLE | Долгота (для карты) |
+
+---
+
+## Как запустить
+
+### 1. Наполнение тестовыми данными
+Для быстрой проверки можно запустить сидер, который добавит популярные российские маршруты:
+```bash
+mvn compile exec:java -Dexec.mainClass="com.trains.util.DataSeeder"
+```
+
+### 2. Запуск приложения (Консольный UI)
+```bash
 mvn compile exec:java
+```

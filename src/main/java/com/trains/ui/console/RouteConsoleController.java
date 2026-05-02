@@ -51,15 +51,16 @@ public class RouteConsoleController {
       System.out.println("  Станций нет.");
       return;
     }
-    System.out.println("  № │ Станция          │ Прибытие │ Отправление │ Тип");
-    System.out.println(" ───┼──────────────────┼──────────┼─────────────┼──────────────");
+    System.out.println("  № │ Станция          │ Прибытие │ Отправление │ День │ Тип");
+    System.out.println(" ───┼──────────────────┼──────────┼─────────────┼──────┼──────────────");
     int num = 1;
+    java.time.format.DateTimeFormatter fmt = java.time.format.DateTimeFormatter.ofPattern("HH:mm");
     for (var s : route.getStations()) {
-      String arr = s.getArrivalTime() != null ? s.getArrivalTime() : "   —  ";
-      String dep = s.getDepartureTime() != null ? s.getDepartureTime() : "    —   ";
+      String arr = s.getArrivalTime() != null ? s.getArrivalTime().format(fmt) : "   —  ";
+      String dep = s.getDepartureTime() != null ? s.getDepartureTime().format(fmt) : "    —   ";
       String type = formatType(s.getType());
-      System.out.printf(" %2d  │ %-16s │  %6s  │   %5s     │ %s%n",
-          num++, s.getName(), arr, dep, type);
+      System.out.printf(" %2d │ %-16s │  %6s  │   %5s     │  %2d  │ %s%n",
+          num++, s.getName(), arr, dep, s.getDayOffset(), type);
     }
   }
 
