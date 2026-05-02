@@ -19,7 +19,7 @@ public class RouteConsoleController {
     List<Route> routes = routeService.getAllRoutes();
     System.out.println();
     System.out.println("╔══════════════════════════════════════════════════════╗");
-    System.out.println("║                   ВСЕ МАРШРУТЫ                      ║");
+    System.out.println("║                   ВСЕ МАРШРУТЫ                       ║");
     System.out.println("╚══════════════════════════════════════════════════════╝");
     System.out.println();
     if (routes.isEmpty()) {

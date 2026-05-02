@@ -37,7 +37,7 @@ public class ConsoleMenu {
   private void printMainMenu() {
     System.out.println();
     System.out.println("╔══════════════════════════════════════╗");
-    System.out.println("║       УЧЁТ МАРШРУТОВ ПОЕЗДОВ        ║");
+    System.out.println("║       УЧЁТ МАРШРУТОВ ПОЕЗДОВ         ║");
     System.out.println("╚══════════════════════════════════════╝");
     System.out.println();
     System.out.println("  1. Все маршруты");

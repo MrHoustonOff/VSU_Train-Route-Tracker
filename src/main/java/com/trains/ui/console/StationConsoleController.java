@@ -32,7 +32,7 @@ public class StationConsoleController {
     while (true) {
       System.out.println();
       System.out.println("╔══════════════════════════════════════╗");
-      System.out.println("║        УПРАВЛЕНИЕ СТАНЦИЯМИ         ║");
+      System.out.println("║        УПРАВЛЕНИЕ СТАНЦИЯМИ          ║");
       System.out.println("╚══════════════════════════════════════╝");
       System.out.printf("%n  Маршрут: %s (Поезд №%s)%n%n", route.getName(), route.getTrainNumber());
       System.out.println("  1. Добавить станцию");
