@@ -50,8 +50,3 @@ mvn compile exec:java -Dexec.mainClass="com.trains.util.DataSeeder"
 ```bash
 mvn compile exec:java
 ```
-
-## Текущий статус
-- [x] **Stage 1**: In-memory хранилище и консольное меню.
-- [x] **Stage 2**: Полноценная БД (H2), JDBC репозитории, валидация типов.
-- [ ] **Stage 3**: Веб-интерфейс (Servlets), Tomcat и карта (Leaflet).
