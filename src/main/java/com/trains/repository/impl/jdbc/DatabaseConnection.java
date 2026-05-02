@@ -35,7 +35,14 @@ public class DatabaseConnection {
       }
       
       if (!sql.isEmpty()) {
-        stmt.execute(sql);
+        // Разбиваем скрипт на отдельные команды по точке с запятой
+        String[] commands = sql.split(";");
+        for (String command : commands) {
+          String trimmedCommand = command.trim();
+          if (!trimmedCommand.isEmpty()) {
+            stmt.execute(trimmedCommand);
+          }
+        }
       }
     } catch (Exception e) {
       e.printStackTrace();
