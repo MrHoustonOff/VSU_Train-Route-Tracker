@@ -3,6 +3,7 @@ package com.trains.service;
 import com.trains.model.Station;
 import com.trains.model.StationType;
 import com.trains.repository.StationRepository;
+import java.time.LocalTime;
 import java.util.List;
 
 public class StationService {
@@ -13,8 +14,8 @@ public class StationService {
     this.stationRepo = stationRepo;
   }
 
-  public Station addStation(long routeId, String name, String arrivalTime,
-      String departureTime, StationType type) {
+  public Station addStation(long routeId, String name, LocalTime arrivalTime,
+      LocalTime departureTime, int dayOffset, StationType type) {
     List<Station> existing = stationRepo.findByRouteId(routeId);
     int nextIndex = existing.size(); // следующий порядковый номер
 
@@ -24,12 +25,13 @@ public class StationService {
     station.setArrivalTime(arrivalTime);
     station.setDepartureTime(departureTime);
     station.setOrderIndex(nextIndex);
+    station.setDayOffset(dayOffset);
     station.setType(type);
     return stationRepo.save(station);
   }
 
   public Station updateStation(long stationId, String name,
-      String arrivalTime, String departureTime) {
+      LocalTime arrivalTime, LocalTime departureTime, int dayOffset) {
     Station station = stationRepo.findById(stationId);
     if (station == null) {
       return null;
@@ -37,6 +39,7 @@ public class StationService {
     station.setName(name);
     station.setArrivalTime(arrivalTime);
     station.setDepartureTime(departureTime);
+    station.setDayOffset(dayOffset);
     return stationRepo.update(station);
   }
 

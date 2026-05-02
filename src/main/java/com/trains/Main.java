@@ -2,8 +2,9 @@ package com.trains;
 
 import com.trains.repository.RouteRepository;
 import com.trains.repository.StationRepository;
-import com.trains.repository.impl.memory.InMemoryRouteRepository;
-import com.trains.repository.impl.memory.InMemoryStationRepository;
+import com.trains.repository.impl.jdbc.DatabaseConnection;
+import com.trains.repository.impl.jdbc.JdbcRouteRepository;
+import com.trains.repository.impl.jdbc.JdbcStationRepository;
 import com.trains.service.RouteService;
 import com.trains.service.StationService;
 import com.trains.ui.console.ConsoleMenu;
@@ -14,9 +15,12 @@ import java.util.Scanner;
 public class Main {
 
   public static void main(String[] args) {
+    // инициализация БД
+    DatabaseConnection.initDatabase();
+
     // репозитории
-    RouteRepository routeRepo = new InMemoryRouteRepository();
-    StationRepository stationRepo = new InMemoryStationRepository();
+    RouteRepository routeRepo = new JdbcRouteRepository();
+    StationRepository stationRepo = new JdbcStationRepository();
 
     // сервисы
     RouteService routeService = new RouteService(routeRepo, stationRepo);

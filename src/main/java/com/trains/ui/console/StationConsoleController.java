@@ -4,6 +4,9 @@ import com.trains.model.Station;
 import com.trains.model.StationType;
 import com.trains.service.RouteService;
 import com.trains.service.StationService;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -12,6 +15,7 @@ public class StationConsoleController {
   private final StationService stationService;
   private final RouteService routeService;
   private final Scanner scanner;
+  private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
 
   public StationConsoleController(StationService stationService,
       RouteService routeService, Scanner scanner) {
@@ -62,19 +66,21 @@ public class StationConsoleController {
     System.out.print("  Выбор: ");
     StationType type = parseType(scanner.nextLine().trim());
 
-    String arrivalTime = null;
-    String departureTime = null;
+    LocalTime arrivalTime = null;
+    LocalTime departureTime = null;
+    int dayOffset = 0;
 
     if (type != StationType.DEPARTURE) {
-      System.out.print("  Время прибытия (HH:mm): ");
-      arrivalTime = scanner.nextLine().trim();
+      arrivalTime = readTime("  Время прибытия (HH:mm): ");
     }
     if (type != StationType.ARRIVAL) {
-      System.out.print("  Время отправления (HH:mm): ");
-      departureTime = scanner.nextLine().trim();
+      departureTime = readTime("  Время отправления (HH:mm): ");
     }
+    
+    System.out.print("  День пути (0 - день отправления, 1 - следующий и т.д.): ");
+    dayOffset = readInt();
 
-    stationService.addStation(routeId, name, arrivalTime, departureTime, type);
+    stationService.addStation(routeId, name, arrivalTime, departureTime, dayOffset, type);
     System.out.println("\n  [✓] Станция добавлена.");
   }
 
@@ -84,15 +90,14 @@ public class StationConsoleController {
     long id = readLong();
     System.out.print("  Новое название: ");
     String name = scanner.nextLine().trim();
-    System.out.print("  Время прибытия (HH:mm, Enter — оставить): ");
-    String arr = scanner.nextLine().trim();
-    System.out.print("  Время отправления (HH:mm, Enter — оставить): ");
-    String dep = scanner.nextLine().trim();
+    
+    LocalTime arr = readTimeOptional("  Время прибытия (HH:mm, Enter — оставить): ");
+    LocalTime dep = readTimeOptional("  Время отправления (HH:mm, Enter — оставить): ");
+    
+    System.out.print("  День пути (0, 1, 2...): ");
+    int dayOffset = readInt();
 
-    var updated = stationService.updateStation(id,
-        name,
-        arr.isEmpty() ? null : arr,
-        dep.isEmpty() ? null : dep);
+    var updated = stationService.updateStation(id, name, arr, dep, dayOffset);
 
     if (updated == null) {
       System.out.printf("%n  [!] Станция с ID %d не найдена.%n", id);
@@ -127,11 +132,46 @@ public class StationConsoleController {
     };
   }
 
+  private LocalTime readTime(String prompt) {
+    while (true) {
+      System.out.print(prompt);
+      String input = scanner.nextLine().trim();
+      try {
+        return LocalTime.parse(input, TIME_FORMATTER);
+      } catch (DateTimeParseException e) {
+        System.out.println("  [!] Ошибка: используйте формат HH:mm (например, 14:30)");
+      }
+    }
+  }
+
+  private LocalTime readTimeOptional(String prompt) {
+    while (true) {
+      System.out.print(prompt);
+      String input = scanner.nextLine().trim();
+      if (input.isEmpty()) {
+        return null;
+      }
+      try {
+        return LocalTime.parse(input, TIME_FORMATTER);
+      } catch (DateTimeParseException e) {
+        System.out.println("  [!] Ошибка: используйте формат HH:mm (например, 14:30)");
+      }
+    }
+  }
+
   private long readLong() {
     try {
       return Long.parseLong(scanner.nextLine().trim());
     } catch (NumberFormatException e) {
       return -1;
+    }
+  }
+
+  private int readInt() {
+    try {
+      return Integer.parseInt(scanner.nextLine().trim());
+    } catch (NumberFormatException e) {
+      return 0;
     }
   }
 }
